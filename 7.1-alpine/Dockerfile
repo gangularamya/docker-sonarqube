@@ -1,12 +1,15 @@
 FROM openjdk:8-alpine as builder
 
 ENV SONAR_VERSION=7.1 \
-    SONARQUBE_HOME=/home/sonarqube \
+    SONARQUBE_HOME=/opt/sonarqub \
     # Database configuration
     # Defaults to using H2
     SONARQUBE_JDBC_USERNAME=sonar \
     SONARQUBE_JDBC_PASSWORD=sonar \
     SONARQUBE_JDBC_URL=
+   
+ENV SONARQUBE_AZURE_HOME "/home/sonarqube"
+RUN mkdir -p "$SONARQUBE_AZURE_HOME"  
 
 RUN set -x \
     && apk add --no-cache gnupg unzip libressl wget bash \
@@ -63,4 +66,5 @@ VOLUME "$SONARQUBE_HOME/data"
 
 WORKDIR $SONARQUBE_HOME
 COPY run.sh $SONARQUBE_HOME/bin/
+RUN ln -s $SONARQUBE_AZURE_HOME /opt/sonarqube/
 ENTRYPOINT "/home/sonarqube/bin/run.sh"
